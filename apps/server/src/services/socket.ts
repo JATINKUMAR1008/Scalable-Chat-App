@@ -9,13 +9,13 @@ const publisher = new Redis({
   host: "redis-3b64b34e-jatinkumar10082003-0747.a.aivencloud.com",
   port: 16093,
   username: "default",
-  password: "AVNS_VQGTNeaazZt9NaT_jPU",
+  password: process.env.REDIS_PASSWORD,
 });
 const subscriber = new Redis({
   host: "redis-3b64b34e-jatinkumar10082003-0747.a.aivencloud.com",
   port: 16093,
   username: "default",
-  password: "AVNS_VQGTNeaazZt9NaT_jPU",
+  password: process.env.REDIS_PASSWORD,
 });
 
 const onlineUserQueue = new OnlineUserQueue();
