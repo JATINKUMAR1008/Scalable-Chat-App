@@ -34,8 +34,8 @@ export default function RegisterPage() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true);
-      const preset_key = "am9op2bj";
-      const cloud_name = "dhiykiupn";
+      const preset_key = process.env.NEXT_PUBLIC_PRESET_KEY;
+      const cloud_name = process.env.NEXT_PUBLIC_CLOUD_NAME;
       if (values.file) {
         const data = new FormData();
         data.append("file", values.file as File);
