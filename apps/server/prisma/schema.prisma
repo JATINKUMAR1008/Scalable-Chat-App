@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model LinkedAccounts {
+  id           String @id @default(uuid())
+  userId       String
+  linkedUserId String
+  user         users  @relation(fields: [userId], references: [id])
+  linkedUser   users  @relation("linkedUserLink", fields: [linkedUserId], references: [id])
+}
+
+model users {
+  id             String           @id @default(uuid())
+  firstName      String
+  lastName       String
+  email          String           @unique
+  imageUrl       String
+  img_public_id  String
+  password       String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  img_signature  String           @default("1221212")
+  linkedAccounts LinkedAccounts[]
+  linkedUserLink LinkedAccounts[] @relation("linkedUserLink")
+  receivedChats  Chat[]           @relation("receiver")
+  Chat           Chat[]
+  groups         groupRoom[]      @relation("groupUser")
+  GroupMessage   GroupMessage[]
+}
+
+model Chat {
+  id              Int       @id @default(autoincrement())
+  senderId        String
+  receiverId      String
+  sender          users     @relation(fields: [senderId], references: [id])
+  receiver        users     @relation("receiver", fields: [receiverId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastMessageTime DateTime?
+  lastMessage     String?
+  messages        Message[]
+}
+
+model groupRoom {
+  id       String         @id @default(uuid())
+  name     String
+  users    users[]        @relation("groupUser")
+  messages GroupMessage[]
+}
+
+model GroupMessage {
+  id        Int       @id @default(autoincrement())
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  senderId  String
+  groupId   String
+  sender    users     @relation(fields: [senderId], references: [id])
+  group     groupRoom @relation(fields: [groupId], references: [id])
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  senderId   String
+  receiverId String
+  chatId     Int
+  chat       Chat     @relation(fields: [chatId], references: [id])
+}
+
+model room {
+  id     String @id @default(uuid())
+  roomId String @unique
+}
